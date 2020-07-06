@@ -5,6 +5,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom'
 
 import Header from './components/Header'
 import Home from './pages/Home'
+import NotFound from './pages/NotFound'
 
 const mainElement = document.createElement('div')
 mainElement.setAttribute('id', 'root')
@@ -17,7 +18,8 @@ const App = () => {
       <Header />
       <BrowserRouter>
         <Switch>
-          <Route path="/" component={Home} />
+          <Route path="/" exact component={Home} />
+          <Route path="*" component={NotFound} />
         </Switch>
       </BrowserRouter>
     </>

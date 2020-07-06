@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useHistory } from 'react-router-dom'
 import { FiImage } from 'react-icons/fi'
 import { Button } from '../../styles/GlobalStyle'
 import { Container, FileSelectionContainer, Cover, FileName } from './styles'
@@ -20,6 +21,8 @@ const Home: React.FC = () => {
     album: '',
     image: ''
   })
+
+  const history = useHistory()
 
   useEffect(() => {
     if (file !== '') {
@@ -56,6 +59,10 @@ const Home: React.FC = () => {
       })
   }
 
+  function handleConfirmFile () {
+    history.push('/file')
+  }
+
   return (
     <Container>
       <FileSelectionContainer onClick={handleFileDialog}>
@@ -65,8 +72,10 @@ const Home: React.FC = () => {
           <FiImage size={60} />
         )}
       </FileSelectionContainer>
-      <FileName>{path.basename(file)}</FileName>
-      <Button>Confirmar Arquivo</Button>
+      {file && (
+        <FileName>{path.basename(file)}</FileName>
+      )}
+      <Button onClick={handleConfirmFile}>Confirmar Arquivo</Button>
     </Container>
   )
 }
