@@ -8,10 +8,11 @@
     "dev:electron": "cross-env NODE_ENV=development webpack --config webpack/electron.webpack.js --mode development && electron .",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config webpack/react.webpack.js --mode development",
     "electron:serve": "wait-on http-get://localhost:4000/ && npm run dev:electron",
-    "dist": "electron-builder",
-    "build": "npm-run-all build:electron build:react && electron .",
-    "build:electron": "webpack --config webpack/electron.webpack.js",
-    "build:react": "webpack --config webpack/react.webpack.js",
+    "build": "npm-run-all dist:electron dist:react && electron-builder",
+    "build:electron": "electron-builder",
+    "dist": "npm-run-all dist:electron dist:react && electron .",
+    "dist:electron": "webpack --config webpack/electron.webpack.js",
+    "dist:react": "webpack --config webpack/react.webpack.js",
     "test": "jest"
   },
   "build": {

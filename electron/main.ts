@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
 import NodeID3 from 'node-id3'
+import getFileMetadata from './getFileMetadata'
 
 let mainWindow: Electron.BrowserWindow | null
 
@@ -36,23 +37,20 @@ function createWindow () {
 }
 
 ipcMain.on('getMusicMetadata', (event, file) => {
-  try {
-    const { title, artist, album = null, image } = NodeID3.read(file)
+  const metadata = getFileMetadata(file)
 
-    event.returnValue = {
-      title,
-      artist,
-      album,
-      image
-    }
-  } catch (error) {
-    event.returnValue = {
-      title: '',
-      artist: '',
-      album: '',
-      image: ''
-    }
-  }
+  event.returnValue = metadata
+})
+
+ipcMain.on('setMusicMetadata', (event, data) => {
+  const metadata = getFileMetadata(data.file)
+
+  const success = NodeID3.write({
+    ...metadata,
+    ...data.metadata
+  }, data.file)
+
+  event.returnValue = success
 })
 
 app.on('ready', createWindow)

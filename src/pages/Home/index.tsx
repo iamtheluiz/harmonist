@@ -72,10 +72,10 @@ const Home: React.FC = () => {
       {file && (
         <>
           <FileName>{metadata.title ? metadata.title : path.basename(file)}</FileName>
-          <Button onClick={handleConfirmFile}>Confirmar Arquivo</Button>
+          <Button onClick={handleConfirmFile}>Confirm File</Button>
           <Button onClick={handleClearFile} style={{
             backgroundColor: '#eb3434'
-          }}>Remover Seleção</Button>
+          }}>Remove Selection</Button>
         </>
       )}
     </Container>

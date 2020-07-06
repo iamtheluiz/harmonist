@@ -7,6 +7,7 @@ import { FileProvider } from './contexts/file'
 
 import Header from './components/Header'
 import Home from './pages/Home'
+import File from './pages/File'
 import NotFound from './pages/NotFound'
 
 const mainElement = document.createElement('div')
@@ -21,7 +22,8 @@ const App = () => {
       <FileProvider>
         <BrowserRouter>
           <Switch>
-            <Route path="/" exact component={Home} />
+            <Route path="/file" exact component={File} />
+            <Route path="" exact component={Home} />
             <Route path="*" component={NotFound} />
           </Switch>
         </BrowserRouter>

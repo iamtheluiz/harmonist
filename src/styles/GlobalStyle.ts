@@ -23,7 +23,7 @@ export const Button = styled.button`
   width: 300px;
   padding: 16px 8px;
   margin: 2px;
-  border-radius: 8px;
+  border-radius: 4px;
   background-color: #FFFFFF30;
   border: 0px;
   color: #FFF;
