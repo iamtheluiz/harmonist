@@ -1,7 +1,7 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
-import installExtension, { REACT_DEVELOPER_TOOLS, REDUX_DEVTOOLS } from 'electron-devtools-installer'
+import NodeID3 from 'node-id3'
 
 let mainWindow: Electron.BrowserWindow | null
 
@@ -11,7 +11,8 @@ function createWindow () {
     height: 700,
     backgroundColor: '#191622',
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      enableRemoteModule: true
     },
     frame: false,
     title: 'Harmonist'
@@ -34,16 +35,25 @@ function createWindow () {
   })
 }
 
-app.on('ready', createWindow)
-  .whenReady()
-  .then(() => {
-    if (process.env.NODE_ENV === 'development') {
-      installExtension(REACT_DEVELOPER_TOOLS)
-        .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.log('An error occurred: ', err))
-      installExtension(REDUX_DEVTOOLS)
-        .then((name) => console.log(`Added Extension:  ${name}`))
-        .catch((err) => console.log('An error occurred: ', err))
+ipcMain.on('getMusicMetadata', (event, file) => {
+  try {
+    const { title, artist, album = null, image } = NodeID3.read(file)
+
+    event.returnValue = {
+      title,
+      artist,
+      album,
+      image
     }
-  })
+  } catch (error) {
+    event.returnValue = {
+      title: '',
+      artist: '',
+      album: '',
+      image: ''
+    }
+  }
+})
+
+app.on('ready', createWindow)
 app.allowRendererProcessReuse = true
