@@ -1,32 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import { FiImage } from 'react-icons/fi'
 import { Button } from '../../styles/GlobalStyle'
 import { Container, FileSelectionContainer, Cover, FileName } from './styles'
 import { remote, ipcRenderer } from 'electron'
 import path from 'path'
+import FileMetadata from '../../types/Metadata'
 
-interface FileMetadata {
-  title: string;
-  artist: string;
-  album: string;
-  image: string;
+interface Props {
+  context: {
+    file: string,
+    metadata: FileMetadata,
+    setFile: (arg0: string) => void,
+    setMetadata: (arg0: FileMetadata) => void
+  }
 }
 
-const Home: React.FC = () => {
-  const [file, setFile] = useState<string>('')
-  const [metadata, setMetadata] = useState<FileMetadata>({
-    title: '',
-    artist: '',
-    album: '',
-    image: ''
-  })
-
+const Home: React.FC<Props> = (props) => {
   const history = useHistory()
 
   useEffect(() => {
-    if (file !== '') {
-      const data = ipcRenderer.sendSync('getMusicMetadata', file)
+    if (props.context.file !== '') {
+      const data = ipcRenderer.sendSync('getMusicMetadata', props.context.file)
 
       try {
         if (data.image !== '') {
@@ -40,9 +35,9 @@ const Home: React.FC = () => {
         data.image = ''
       }
 
-      setMetadata(data)
+      props.context.setMetadata(data)
     }
-  }, [file])
+  }, [props.context.file])
 
   function handleFileDialog () {
     remote.dialog.showOpenDialog({
@@ -55,7 +50,7 @@ const Home: React.FC = () => {
       ]
     })
       .then(file => {
-        setFile(file.filePaths[0])
+        props.context.setFile(file.filePaths[0])
       })
   }
 
@@ -66,14 +61,14 @@ const Home: React.FC = () => {
   return (
     <Container>
       <FileSelectionContainer onClick={handleFileDialog}>
-        {metadata?.image !== '' ? (
-          <Cover src={metadata?.image} />
+        {props.context.metadata?.image !== '' ? (
+          <Cover src={props.context.metadata?.image} />
         ) : (
           <FiImage size={60} />
         )}
       </FileSelectionContainer>
-      {file && (
-        <FileName>{path.basename(file)}</FileName>
+      {props.context.file && (
+        <FileName>{path.basename(props.context.file)}</FileName>
       )}
       <Button onClick={handleConfirmFile}>Confirmar Arquivo</Button>
     </Container>
