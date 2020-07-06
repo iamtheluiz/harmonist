@@ -15,6 +15,7 @@ justify-content: center;
 align-items: center;
 width: 300px;
 height: 300px;
+margin: 4px;
 border: 2px solid grey;
 border-radius: 8px;
 border-style: dashed;
@@ -28,6 +29,6 @@ border-radius: 8px;
 `
 
 export const FileName = styled.span`
-font-size: 16px;
+font-size: 20px;
 padding: 8px;
 `

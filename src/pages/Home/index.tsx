@@ -1,6 +1,6 @@
 import React, { useEffect, useContext } from 'react'
 import { useHistory } from 'react-router-dom'
-import { FiImage } from 'react-icons/fi'
+import { FiMusic } from 'react-icons/fi'
 import { Button } from '../../styles/GlobalStyle'
 import { Container, FileSelectionContainer, Cover, FileName } from './styles'
 import { remote, ipcRenderer } from 'electron'
@@ -50,19 +50,34 @@ const Home: React.FC = () => {
     history.push('/file')
   }
 
+  function handleClearFile () {
+    setFile('')
+    setMetadata({
+      title: '',
+      album: '',
+      artist: '',
+      image: ''
+    })
+  }
+
   return (
     <Container>
       <FileSelectionContainer onClick={handleFileDialog}>
         {metadata?.image !== '' ? (
           <Cover src={metadata?.image} />
         ) : (
-          <FiImage size={60} />
+          <FiMusic size={60} />
         )}
       </FileSelectionContainer>
       {file && (
-        <FileName>{path.basename(file)}</FileName>
+        <>
+          <FileName>{metadata.title ? metadata.title : path.basename(file)}</FileName>
+          <Button onClick={handleConfirmFile}>Confirmar Arquivo</Button>
+          <Button onClick={handleClearFile} style={{
+            backgroundColor: '#eb3434'
+          }}>Remover Seleção</Button>
+        </>
       )}
-      <Button onClick={handleConfirmFile}>Confirmar Arquivo</Button>
     </Container>
   )
 }

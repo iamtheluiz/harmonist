@@ -6,6 +6,7 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     user-select: none;
+    outline: 0;
     outline-color: transparent;
   }
 
@@ -21,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
 export const Button = styled.button`
   width: 300px;
   padding: 16px 8px;
+  margin: 2px;
   border-radius: 8px;
   background-color: #FFFFFF30;
   border: 0px;
