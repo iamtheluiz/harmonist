@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, FormEvent } from 'react'
+import Swal from 'sweetalert2'
 import FileContext from '../../contexts/file'
 import { useHistory } from 'react-router-dom'
 import { FiArrowLeft, FiMusic } from 'react-icons/fi'
@@ -52,7 +53,22 @@ const File: React.FC = () => {
       metadata
     })
 
-    console.log(response)
+    if (response) {
+      Swal.fire({
+        title: 'Success',
+        text: 'Your file data has been updated',
+        icon: 'success',
+        onClose: () => {
+          history.push('/')
+        }
+      })
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: 'Could not update file data',
+        icon: 'error'
+      })
+    }
   }
 
   return (

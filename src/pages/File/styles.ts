@@ -40,6 +40,7 @@ export const FileSelectionContainer = styled.div`
   align-items: center;
   width: 384px;
   height: 384px;
+  margin-bottom: 4px;
   border: 2px solid grey;
   border-radius: 4px;
   border-style: dashed;
@@ -76,6 +77,7 @@ export const Label = styled.label`
 export const FormButton = styled.button`
   width: 100%;
   padding: 16px 8px;
+  margin-top: 4px;
   border-radius: 4px;
   background-color: #FFFFFF30;
   border: 0px;
