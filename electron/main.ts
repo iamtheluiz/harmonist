@@ -45,10 +45,13 @@ ipcMain.on('getMusicMetadata', (event, file) => {
 ipcMain.on('setMusicMetadata', (event, data) => {
   const metadata = getFileMetadata(data.file)
 
-  const success = NodeID3.write({
-    ...metadata,
-    ...data.metadata
-  }, data.file)
+  let definedMetadata = { ...data.metadata }
+
+  if (!data.metadata.image) {
+    definedMetadata = { ...definedMetadata, ...metadata }
+  }
+
+  const success = NodeID3.write(definedMetadata, data.file)
 
   event.returnValue = success
 })

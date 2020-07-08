@@ -14,6 +14,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     if (file !== '') {
       const data = ipcRenderer.sendSync('getMusicMetadata', file)
+      const dataConfirm: { title ?: string, artist?: string, album?: string } = {}
 
       try {
         if (data.image !== '') {
@@ -27,7 +28,20 @@ const Home: React.FC = () => {
         data.image = ''
       }
 
-      setMetadata(data)
+      if (data.title === null) {
+        dataConfirm.title = '-'
+      }
+      if (data.artist === null) {
+        dataConfirm.artist = '-'
+      }
+      if (data.album === null) {
+        dataConfirm.album = '-'
+      }
+
+      setMetadata({
+        ...data,
+        ...dataConfirm
+      })
     }
   }, [file])
 

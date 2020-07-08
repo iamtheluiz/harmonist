@@ -1,9 +1,11 @@
-import React, { useContext, useEffect, FormEvent } from 'react'
+import React, { useContext, useEffect, FormEvent, useState } from 'react'
 import Swal from 'sweetalert2'
 import FileContext from '../../contexts/file'
 import { useHistory } from 'react-router-dom'
 import { FiArrowLeft, FiMusic } from 'react-icons/fi'
-import { ipcRenderer } from 'electron'
+import { remote, ipcRenderer } from 'electron'
+import fs from 'fs'
+import path from 'path'
 
 import {
   Container,
@@ -19,11 +21,22 @@ import {
 } from './styles'
 
 const File: React.FC = () => {
-  const context = useContext(FileContext)
+  const { metadata, file, setMetadata } = useContext(FileContext)
+  const [image, setImage] = useState<string>('')
+  const [selectedImage, setSelectedImage] = useState<any>({
+    mime: '',
+    imageBuffer: null,
+    type: {
+      id: 3,
+      name: 'front cover'
+    },
+    description: String,
+    url: ''
+  })
   const history = useHistory()
 
   useEffect(() => {
-    if (context.file === '') {
+    if (file === '') {
       history.push('/')
     }
   }, [])
@@ -32,37 +45,90 @@ const File: React.FC = () => {
     history.push('/')
   }
 
-  function handleSubmit (event: FormEvent) {
-    event.preventDefault()
-    const { title, artist, album } = context.metadata
-
-    const metadata: { title?: string, artist?: string, album?: string } = {}
-
-    if (title !== '') {
-      metadata.title = title
-    }
-    if (artist !== '') {
-      metadata.artist = artist
-    }
-    if (album !== '') {
-      metadata.album = album
-    }
-
-    const response = ipcRenderer.sendSync('setMusicMetadata', {
-      file: context.file,
-      metadata
+  function handleSelectCover () {
+    remote.dialog.showOpenDialog({
+      properties: ['openFile'],
+      filters: [
+        {
+          extensions: ['jpg', 'png'],
+          name: 'Image'
+        }
+      ]
     })
+      .then(selectedFile => {
+        try {
+          const fileLocation = selectedFile.filePaths[0]
+          setImage(fileLocation)
 
-    if (response) {
-      Swal.fire({
-        title: 'Success',
-        text: 'Your file data has been updated',
-        icon: 'success',
-        onClose: () => {
-          history.push('/')
+          const fileBuffer = fs.readFileSync(fileLocation)
+          const ext = path.extname(fileLocation).split('.')[1]
+
+          const imageString = btoa(String.fromCharCode.apply(null, fileBuffer))
+
+          setSelectedImage({
+            ...selectedFile,
+            type: {
+              id: 3,
+              name: 'front cover'
+            },
+            mime: ext,
+            imageBuffer: fileBuffer,
+            url: `data:image/${ext};base64,${imageString}`
+          })
+        } catch (error) {
+          Swal.fire({
+            title: 'Error',
+            text: 'Could not get file cover',
+            icon: 'error'
+          })
         }
       })
-    } else {
+  }
+
+  function handleSubmit (event: FormEvent) {
+    event.preventDefault()
+
+    const { title, album, artist } = metadata
+
+    const data: { title?: string, artist?: string, album?: string, image?: any, APIC?: any } = {}
+
+    if (title !== '') {
+      data.title = title
+    }
+    if (artist !== '') {
+      data.artist = artist
+    }
+    if (album !== '') {
+      data.album = album
+    }
+    if (image !== '') {
+      data.image = selectedImage
+      data.APIC = image
+    }
+
+    try {
+      const response = ipcRenderer.sendSync('setMusicMetadata', {
+        file,
+        metadata: data
+      })
+
+      if (response) {
+        Swal.fire({
+          title: 'Success',
+          text: 'Your file data has been updated',
+          icon: 'success',
+          onClose: () => {
+            history.push('/')
+          }
+        })
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Could not update file data',
+          icon: 'error'
+        })
+      }
+    } catch (error) {
       Swal.fire({
         title: 'Error',
         text: 'Could not update file data',
@@ -79,9 +145,9 @@ const File: React.FC = () => {
         </NavigationButton>
       </Header>
       <Form style={{ display: 'flex', flexDirection: 'column' }} onSubmit={handleSubmit}>
-        <FileSelectionContainer>
-          {context.metadata.image !== '' ? (
-            <Cover src={context.metadata.image} />
+        <FileSelectionContainer onClick={handleSelectCover}>
+          {(metadata.image !== '' || image !== '') ? (
+            <Cover src={image !== '' ? selectedImage.url : metadata.image} />
           ) : (
             <FiMusic size={60} />
           )}
@@ -92,9 +158,9 @@ const File: React.FC = () => {
           <Input
             type="text"
             id="title"
-            value={context.metadata.title}
-            onChange={event => context.setMetadata({
-              ...context.metadata,
+            value={metadata.title}
+            onChange={event => setMetadata({
+              ...metadata,
               title: event.target.value
             })}
           />
@@ -105,9 +171,9 @@ const File: React.FC = () => {
           <Input
             type="text"
             id="artist"
-            value={context.metadata.artist}
-            onChange={event => context.setMetadata({
-              ...context.metadata,
+            value={metadata.artist}
+            onChange={event => setMetadata({
+              ...metadata,
               artist: event.target.value
             })}
           />
@@ -118,9 +184,9 @@ const File: React.FC = () => {
           <Input
             type="text"
             id="album"
-            value={context.metadata.album}
-            onChange={event => context.setMetadata({
-              ...context.metadata,
+            value={metadata.album}
+            onChange={event => setMetadata({
+              ...metadata,
               album: event.target.value
             })}
           />
