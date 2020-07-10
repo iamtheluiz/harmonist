@@ -36,6 +36,8 @@ module.exports = {
     publicPath: './'
   },
   plugins: [
-    new HtmlWebpackPlugin()
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '..', 'index.html')
+    })
   ]
 }

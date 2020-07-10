@@ -24,7 +24,8 @@
       "dist/**/*"
     ],
     "directories": {
-      "output": "build/"
+      "output": "build/",
+      "buildResources": "assets/"
     }
   },
   "keywords": [],
