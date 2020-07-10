@@ -20,17 +20,28 @@ import {
   FormButton
 } from './styles'
 
+interface SelectedImage {
+  mime: string,
+  imageBuffer: Buffer | null,
+  type: {
+    id: number,
+    name: string
+  },
+  description?: string,
+  url: string
+}
+
 const File: React.FC = () => {
   const { metadata, file, setMetadata } = useContext(FileContext)
   const [image, setImage] = useState<string>('')
-  const [selectedImage, setSelectedImage] = useState<any>({
+  const [selectedImage, setSelectedImage] = useState<SelectedImage>({
     mime: '',
     imageBuffer: null,
     type: {
       id: 3,
       name: 'front cover'
     },
-    description: String,
+    description: '',
     url: ''
   })
   const history = useHistory()
@@ -63,7 +74,7 @@ const File: React.FC = () => {
           const fileBuffer = fs.readFileSync(fileLocation)
           const ext = path.extname(fileLocation).split('.')[1]
 
-          const imageString = btoa(String.fromCharCode.apply(null, fileBuffer))
+          const imageString = btoa(String.fromCharCode.apply(null, fileBuffer.toJSON().data))
 
           setSelectedImage({
             ...selectedFile,
@@ -90,7 +101,7 @@ const File: React.FC = () => {
 
     const { title, album, artist } = metadata
 
-    const data: { title?: string, artist?: string, album?: string, image?: any, APIC?: any } = {}
+    const data: { title?: string, artist?: string, album?: string, image?: unknown, APIC?: unknown } = {}
 
     if (title !== '') {
       data.title = title
@@ -192,7 +203,7 @@ const File: React.FC = () => {
           />
         </InputField>
 
-        <FormButton type="submit">Enviar</FormButton>
+        <FormButton type="submit">Submit</FormButton>
       </Form>
     </Container>
   )
