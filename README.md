@@ -1,4 +1,4 @@
-## Harmonist - Desktop Application
+# 🎵 Harmonist - Desktop Application
 
 Harmonist is a application that helps you editing metadata from audio files.
 
@@ -6,40 +6,53 @@ Harmonist is a application that helps you editing metadata from audio files.
   <img src=".github/selectedFile.png" alt="Application Interface" />
 </p>
 
-## Boilerplate
+## 📂 Boilerplate
 
 Boilerplate for a project using Electron, React and Typescript
 
 - [diego3g/electron-typescript-react](https://github.com/diego3g/electron-typescript-react)
 
+## 🏃 Getting Started
 
-## Installation
+First, clone this respository and access the created folder:
 
-Use a package manager of your choice (npm, yarn, etc.) in order to install all dependencies
+```bash
+# Cloning repository
+git clone https://github.com/iamtheluiz/harmonist.git
+
+cd harmonist/
+```
+
+Getting into the folder, install project dependencies:
 
 ```bash
 npm install
-```
-
-```bash
+# or
 yarn install
 ```
 
-## Usage
+## 👨🏽‍💻 Usage
 
 In order to run this project 2 scripts will need to be executed `dev:react` and `dev:electron`, run each one in a different terminal and always run `dev:react` before `dev:electron`.
 
 ```bash
 npm run dev:react
-```
-```bash
+
 npm run dev:electron
 ```
 
-## Build
+## ⚙️ Build
 
 To build this project, run:
 
 ```bash
 yarn build
 ```
+
+## 💼 Authors
+
+* **Luiz Gustavo** - *Development* - [iamtheluiz](https://github.com/iamtheluiz)
+
+## 📃 License
+
+This project is under the MIT License - see the [LICENSE](LICENSE) file for details.
