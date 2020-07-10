@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, nativeImage } from 'electron'
 import * as path from 'path'
 import * as url from 'url'
 import NodeID3 from 'node-id3'
@@ -7,6 +7,8 @@ import getFileMetadata from './getFileMetadata'
 let mainWindow: Electron.BrowserWindow | null
 
 function createWindow () {
+  const icon = nativeImage.createFromPath(`${app.getAppPath()}/assets/icon.png`)
+
   mainWindow = new BrowserWindow({
     width: 1100,
     height: 700,
@@ -16,7 +18,8 @@ function createWindow () {
       enableRemoteModule: true
     },
     frame: false,
-    title: 'Harmonist'
+    title: 'Harmonist',
+    icon
   })
 
   if (process.env.NODE_ENV === 'development') {
