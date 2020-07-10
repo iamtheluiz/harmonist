@@ -17,6 +17,16 @@ export const GlobalStyle = createGlobalStyle`
     color: #E1E1E6;
     -webkit-app-region: no-drag;
   }
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #FFFFFF30;
+  }
 `
 
 export const Button = styled.button`
